@@ -1,8 +1,15 @@
 import React from 'react'
-
+import {BroswerRouter, Route, Routes} from "react-router-dom";
 const App = () => {
   return (
-    <div>App</div>
+
+    <BroswerRouter>
+      <Routes>
+        <Route path='/'  />
+        <Route path='/signup'  />
+        <Route path='/products' />
+      </Routes>
+    </BroswerRouter>
   )
 }
 
