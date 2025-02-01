@@ -1,4 +1,4 @@
-import { response, Router } from "express";
+import {  Router } from "express";
 import asyncHandler from "./middleware.js";
 import { z } from "zod";
 import { User } from "../model/dbModel.js";

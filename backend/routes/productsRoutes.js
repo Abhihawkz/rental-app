@@ -58,13 +58,15 @@ router.put(
         throw new Error("Product not found to edit")
     }
     await Product.findOneAndUpdate({
-      _id: id,
-      name: req.body.name || product.name,
+      _id: id},{
+        name: req.body.name || product.name,
       image: req.body.image || product.image,
       description: req.body.description || product.description,
       price:req.body.price || product.price,
       available:req.body.available || product.available,
-    });
+
+      }
+    );
     res.status(200).json({response:"Product Details Edited sucessfully"})
   })
 );

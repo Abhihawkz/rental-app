@@ -26,7 +26,6 @@ export const adminMiddleware = (req,res,next)=>{
     try {
         const token = req.cookies['token'];
         const admin = jwt.verify(token,process.env.JWT_SECRET);
-        console.log(admin)
         if(admin.id && admin.isAdmin){
            req.user = admin.id; 
            next();
