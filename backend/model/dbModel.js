@@ -61,7 +61,7 @@ const rentalSchema = new mongoose.Schema(
       ref: "Products",
       require: true,
     },
-    stratDate: {
+    startDate: {
       type: Date,
       required: true,
     },
@@ -80,13 +80,6 @@ const rentalSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-rentalSchema.pre("save", function (next) {
-  const rentalPeriodInDays =
-    (this.endDate - this.startDate) / (1000 * 60 * 60 * 24);
-  this.totalPrice = rentalPeriodInDays * this.product.pricePerDay;
-  next();
-});
 
 const User = mongoose.model("Users", userSchema);
 const Product = mongoose.model("Products", productSchema);

@@ -12,9 +12,11 @@ export const userMiddleware = (req,res,next)=>{
         const user = jwt.verify(token,process.env.JWT_SECRET);
         if(!user){
             res.json({response:"User Not Authenticated"});
+        }else{
+            console.log(user.id);
+            req.user = user.id;
+            next()
         }
-        req.user = user._id;
-        next()
     } catch (error) {
         console.log(`Error in userMiddleware`);
     }
@@ -26,7 +28,7 @@ export const adminMiddleware = (req,res,next)=>{
         const admin = jwt.verify(token,process.env.JWT_SECRET);
         console.log(admin)
         if(admin.id && admin.isAdmin){
-           req.user = admin._id; 
+           req.user = admin.id; 
            next();
         }else{
             res.json({response : "you're not a admin to access this page"})
