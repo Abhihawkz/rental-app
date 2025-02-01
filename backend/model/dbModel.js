@@ -4,19 +4,19 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      require,
+      required:true,
     },
     email: {
       type: String,
-      require,
+      required:true,
     },
     phNumber: {
       type: Number,
-      require,
+      required:true,
     },
     password: {
-      type: Number,
-      require,
+      type: String,
+      required:true,
     },
     isAdmin: {
       type: Boolean,
@@ -29,15 +29,19 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require,
+      required:true,
+    },
+    image: {
+      type: String,
+      required: true,
     },
     description: {
       type: String,
-      require,
+      required:true,
     },
     price: {
       type: Number,
-      require,
+      required:true,
     },
     available: {
       type: Boolean,
@@ -60,15 +64,16 @@ const rentalSchema = new mongoose.Schema(
     },
     endDate: {
       type: Date,
-      require,
+      required:true,
     },
     totalPrice: {
       type: Number,
-    },user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Users",
-        required:true,
-    }
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -80,8 +85,8 @@ rentalSchema.pre("save", function (next) {
   next();
 });
 
-const User = mongoose.model('Users',userSchema);
-const Product = mongoose.model('Products',productSchema);
-const Rental = mongoose.model('Rental',rentalSchema);
+const User = mongoose.model("Users", userSchema);
+const Product = mongoose.model("Products", productSchema);
+const Rental = mongoose.model("Rental", rentalSchema);
 
-export { User,Product,Rental}
+export { User, Product, Rental };
