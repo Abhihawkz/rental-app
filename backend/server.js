@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js"
-import productRoutes from "./routes/userRoutes.js"
+import productRoutes from "./routes/productsRoutes.js"
 import connectDb from "./model/db.js";
 import cookieParser from "cookie-parser";
 

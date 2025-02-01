@@ -1,9 +1,10 @@
-import { Router } from "express";
+import { response, Router } from "express";
 import asyncHandler from "./middleware.js";
 import { z } from "zod";
 import { User } from "../model/dbModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 const router = Router();
 const registerSchema = z.object({
   username: z.string(),
@@ -66,5 +67,10 @@ router.post("/login",asyncHandler(async (req, res) => {
 router.get("/me", (req, res) => {
     res.json({msg:"healthy"})
 });
+
+router.post("/logout",(req,res)=>{
+    res.clearCookie('token',{httpOnly:true})
+    res.json({response:"logut sucessfully"})
+})
 
 export default router;

@@ -46,7 +46,10 @@ const productSchema = new mongoose.Schema(
     available: {
       type: Boolean,
       default: true,
-    },
+    },Admin:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Users"
+    }
   },
   { timestamps: true }
 );
