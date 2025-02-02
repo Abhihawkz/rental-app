@@ -13,7 +13,6 @@ export const userMiddleware = (req,res,next)=>{
         if(!user){
             res.json({response:"User Not Authenticated"});
         }else{
-            console.log(user.id);
             req.user = user.id;
             next()
         }

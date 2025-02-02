@@ -35,7 +35,7 @@ export const register = asyncHandler(async (req, res) => {
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
-    res.json({ message: "user has been created" , user:newUser});
+    res.status(200).json({ message: "Account Created" , user:{username:user.username,isAdmin:user.isAdmin}});
   }
 });
 
@@ -59,7 +59,7 @@ export const login = asyncHandler(async (req, res) => {
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
-    res.json({ response: "user has sucessfully loged In" , user:user });
+    res.status(200).json({ message: "User Logged In" , user:{username:user.username,isAdmin:user.isAdmin} });
   }
 });
 

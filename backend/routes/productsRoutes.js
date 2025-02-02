@@ -18,7 +18,7 @@ router.put("/edit", adminMiddleware, edit);
 
 router.delete("/del", adminMiddleware, del);
 
-router.get("/getall", userMiddleware, getAll);
+router.get("/getAll", userMiddleware, getAll);
 
 router.get("/getOne/:id", userMiddleware, getOne);
 

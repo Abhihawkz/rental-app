@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { post } from "../services/ApiEndPoint";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,6 @@ const Register = () => {
   });
 
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,8 +28,9 @@ const Register = () => {
     try {
       const {username,password,email,phNumber} = formData;
       const response = await post("/api/v1/user/register",{username,email,password,phNumber})
-      console.log(response.data.user);
-      setSuccessMessage(response.data.message);
+      if(response.status == 200){
+        toast.success(response.data.message)
+      }
       setError("");
       setFormData({
         username: "",
@@ -144,9 +145,6 @@ const Register = () => {
         </p>
 
         {error && <div className="mt-4 text-red-600 text-sm">{error}</div>}
-        {successMessage && (
-          <div className="mt-4 text-green-600 text-sm">{successMessage}</div>
-        )}
       </div>
     </div>
   );

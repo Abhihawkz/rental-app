@@ -12,6 +12,7 @@ const productSchema = z.object({
 
 export const add = asyncHandler(async (req, res) => {
   const { success } = productSchema.safeParse(req.body);
+  console.log(req.body)
   if (!success) {
     throw new Error("Invalid input types");
   }
@@ -64,7 +65,7 @@ export const edit = asyncHandler(async (req, res) => {
 
 export const getAll = asyncHandler(async (req, res) => {
   const products = await Product.find();
-  res.json({ response: products });
+  res.json({ products: products });
 });
 
 export const del = asyncHandler(async (req, res) => {
