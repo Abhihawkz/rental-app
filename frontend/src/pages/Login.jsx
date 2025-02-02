@@ -1,12 +1,15 @@
-import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { post } from "../services/ApiEndPoint";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { SetUser } from "../redux/AuthSlice";
+import { SetUser } from "../redux/AuthSlice.js";
+
 
 const Login = () => {
+  
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -33,6 +36,7 @@ const Login = () => {
       if(response.status == 200){
         toast.success(response.data.message)
         dispatch(SetUser(response.data.user))
+        navigate('/')
       }
       setError("");
       setFormData({
