@@ -1,4 +1,4 @@
-import asyncHandler from "./middleware.js";
+import asyncHandler from "../routes/middleware.js";
 import { z } from "zod";
 import { Product, Rental } from "../model/dbModel.js";
 

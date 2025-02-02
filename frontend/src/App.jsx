@@ -1,15 +1,17 @@
 import React from 'react'
-import {BroswerRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes} from "react-router-dom";
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import Product from './pages/Product.jsx';
 const App = () => {
   return (
-
-    <BroswerRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path='/'  />
-        <Route path='/signup'  />
-        <Route path='/products' />
+        <Route path='/' element={<Login />} />
+        <Route path='/signup' element={<Register />}  />
+        <Route path='/products' element={<Product />} />
       </Routes>
-    </BroswerRouter>
+    </BrowserRouter>
   )
 }
 

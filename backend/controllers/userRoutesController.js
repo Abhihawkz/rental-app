@@ -1,18 +1,19 @@
-import asyncHandler from "./middleware.js";
 import { z } from "zod";
 import { User } from "../model/dbModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import asyncHandler from "../routes/middleware.js";
 
 const registerSchema = z.object({
   username: z.string(),
   email: z.string().email(),
-  phNumber: z.number().min(10, { message: "Ph number must be of 10 numbers" }),
+  phNumber: z.string().min(10, { message: "Ph number must be of 10 numbers" }),
   password: z.string(),
 });
 
 export const register = asyncHandler(async (req, res) => {
   const { success } = registerSchema.safeParse(req.body);
+  console.log(req.body)
   if (!success) {
     throw new Error("Invalid input types");
   } else {
@@ -34,7 +35,7 @@ export const register = asyncHandler(async (req, res) => {
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
-    res.json({ response: "user has been created" });
+    res.json({ message: "user has been created" , user:newUser});
   }
 });
 
