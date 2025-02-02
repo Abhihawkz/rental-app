@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { post } from "../services/ApiEndPoint";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -25,15 +26,8 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/user/register",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const {username,password,email,phNumber} = formData;
+      const response = await post("/api/v1/user/register",{username,email,password,phNumber})
       console.log(response.data.user);
       setSuccessMessage(response.data.message);
       setError("");
