@@ -8,29 +8,45 @@ import { Logout } from "../redux/AuthSlice";
 
 const Home = () => {
   const [data, setData] = useState([]);
-  const dispatch = useDispatch()
+  const [selectedCategory, setSelectedCategory] = useState("available"); 
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.Auth.user);
-  const navigate = useNavigate()
-  useEffect(() => {
-    async function getData() {
-      const response = await get("/api/v1/product/getAll");
-      console.log(response.data);
+  const navigate = useNavigate();
+
+  const fetchData = async (category) => {
+    try {
+      let response;
+      if (category === "available") {
+        response = await get("/api/v1/product/getAll");
+      } else if (category === "rented") {
+        response = await get("/api/v1/product/userRented");
+      }
       setData(response.data.products);
+    } catch (error) {
+      toast.error("Failed to fetch data.");
     }
-    getData();
+  };
+
+  useEffect(() => {
+    fetchData("available");
   }, []);
 
-  const onLogout = async() => {
+  const onLogout = async () => {
     try {
-        const response = await post("/api/v1/user/logout")
-        if(response.status == 200){
-            toast.success(response.data.message)
-            dispatch(Logout())
-            navigate("/signin")    
-        }
+      const response = await post("/api/v1/user/logout");
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        dispatch(Logout());
+        navigate("/signin");
+      }
     } catch (error) {
-        
+      toast.error("Logout failed.");
     }
+  };
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    fetchData(category); 
   };
 
   return (
@@ -40,9 +56,6 @@ const Home = () => {
           <div className="text-lg font-medium text-gray-800 cursor-pointer">
             Welcome, {user.username}!
           </div>
-          <h2 className="text-3xl font-semibold text-center flex-1 text-gray-900">
-            Equipments
-          </h2>
           <button
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
             onClick={onLogout}
@@ -50,22 +63,43 @@ const Home = () => {
             Logout
           </button>
         </div>
-        <div className="p-8">
 
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {data.map((product) => (
-            <Card
-              key={product._id}
-              name={product.name}
-              image={product.image}
-              description={product.description}
-              price={product.price}
-              available={product.available}
-            />
-          ))}
+        <div className="flex h-screen">
+          <div className="w-1/6 bg-white p-8 border-r-2 border-gray-200 h-full">
+            <div
+              className="text-xl font-semibold text-gray-900 mb-4 cursor-pointer"
+              onClick={() => handleCategoryClick("available")}
+            >
+              Equipments Available
+            </div>
+            <div
+              className="text-xl font-semibold text-gray-900 mb-4 cursor-pointer"
+              onClick={() => handleCategoryClick("rented")}
+            >
+              Rented Equipments
+            </div>
+            {user.role === "admin" && (
+              <div className="text-xl font-semibold text-gray-900 mb-4">
+                Add Equipments
+              </div>
+            )}
+          </div>
+
+          <div className="w-full pl-4 pt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {data.map((product) => (
+                <Card
+                  key={product._id}
+                  name={product.name}
+                  image={product.image}
+                  description={product.description}
+                  price={product.price}
+                  available={product.available}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
       </div>
     </>
   );

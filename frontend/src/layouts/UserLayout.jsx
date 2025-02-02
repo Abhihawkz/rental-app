@@ -11,7 +11,10 @@ const UserLayout = () => {
     }
   })
   return (
-    <><Outlet /></>
+    <>
+    
+    <Outlet />
+    </>
   )
 }
 
