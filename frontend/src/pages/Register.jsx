@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { post } from "../services/ApiEndPoint";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { SetUser } from "../redux/AuthSlice.js";
 
 const Register = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     phNumber: "",
   });
-
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +32,10 @@ const Register = () => {
       const response = await post("/api/v1/user/register",{username,email,password,phNumber})
       if(response.status == 200){
         console.log("sucessfully logged in")
+        toast.success(response.data.message)
+        dispatch(SetUser(response.data.user))
+        navigate('/')
       }
-      setSuccessMessage(response.data.message);
       setError("");
       setFormData({
         username: "",
@@ -146,9 +150,6 @@ const Register = () => {
         </p>
 
         {error && <div className="mt-4 text-red-600 text-sm">{error}</div>}
-        {successMessage && (
-          <div className="mt-4 text-green-600 text-sm">{successMessage}</div>
-        )}
       </div>
     </div>
   );

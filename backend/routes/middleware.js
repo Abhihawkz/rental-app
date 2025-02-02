@@ -10,6 +10,7 @@ export const userMiddleware = (req,res,next)=>{
     try {
         const token = req.cookies['token'];
         const user = jwt.verify(token,process.env.JWT_SECRET);
+        console.log(user)
         if(!user){
             res.json({response:"User Not Authenticated"});
         }else{
@@ -25,6 +26,7 @@ export const adminMiddleware = (req,res,next)=>{
     try {
         const token = req.cookies['token'];
         const admin = jwt.verify(token,process.env.JWT_SECRET);
+        console.log(admin)
         if(admin.id && admin.role == "admin"){
            req.user = admin.id; 
            next();

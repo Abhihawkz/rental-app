@@ -31,11 +31,11 @@ export const register = asyncHandler(async (req, res) => {
     });
     console.log(process.env.JWT_SECRET);
     const token = jwt.sign(
-      { id: newUser._id, isAdmin: newUser.isAdmin },
+      { id: newUser._id, role: newUser.role },
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
-    res.status(200).json({ message: "Account Created" , user:{username:user.username,role:user.role}});
+    res.status(200).json({ message: "Account Created" , user:{username:newUser.username,role:newUser.role}});
   }
 });
 
@@ -55,7 +55,7 @@ export const login = asyncHandler(async (req, res) => {
       throw new Error("Invalid Email or Password");
     }
     const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
@@ -65,5 +65,5 @@ export const login = asyncHandler(async (req, res) => {
 
 export const logout = (req, res) => {
   res.clearCookie("token", { httpOnly: true });
-  res.json({ response: "logut sucessfully" });
+  res.status(200).json({ message: "Logut sucessfully" });
 };
