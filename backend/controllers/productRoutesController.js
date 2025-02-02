@@ -6,8 +6,8 @@ const productSchema = z.object({
   name: z.string(),
   image: z.string(),
   description: z.string(),
-  price: z.number(),
-  available: z.boolean(),
+  price: z.string(),
+  available: z.boolean().optional(),
 });
 
 export const add = asyncHandler(async (req, res) => {
@@ -24,17 +24,17 @@ export const add = asyncHandler(async (req, res) => {
     name: req.body.name,
     image: req.body.image,
     description: req.body.description,
-    price: req.body.price,
-    available: req.body.available,
+    price: Number(req.body.price),
+    available: req.body.available || true,
   });
-  res.json({ response: "Product Sucessfully Added", Product: newProduct });
+  res.json({ message: "Product Sucessfully Added", Product: newProduct });
 });
 
 const editSchema = z.object({
   name: z.string().optional(),
   image: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().optional(),
+  price: z.string().optional(),
   available: z.boolean().optional(),
 });
 

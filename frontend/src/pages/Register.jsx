@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { SetUser } from "../redux/AuthSlice.js";
 
 const Register = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -28,13 +28,18 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const {username,password,email,phNumber} = formData;
-      const response = await post("/api/v1/user/register",{username,email,password,phNumber})
-      if(response.status == 200){
-        console.log("sucessfully logged in")
-        toast.success(response.data.message)
-        dispatch(SetUser(response.data.user))
-        navigate('/')
+      const { username, password, email, phNumber } = formData;
+      const response = await post("/api/v1/user/register", {
+        username,
+        email,
+        password,
+        phNumber,
+      });
+      if (response.status == 200) {
+        console.log("sucessfully logged in");
+        toast.success(response.data.message);
+        dispatch(SetUser(response.data.user));
+        navigate("/");
       }
       setError("");
       setFormData({
@@ -45,8 +50,8 @@ const Register = () => {
       });
     } catch (err) {
       if (err.response && err.response.data) {
-        setError(
-          err.response.data.message || "An error occurred while registering"
+        toast.error(
+          err.response.data.message || "Error while Registering" || error
         );
       } else {
         setError("Network error or server down");
@@ -148,8 +153,6 @@ const Register = () => {
             Login
           </Link>
         </p>
-
-        {error && <div className="mt-4 text-red-600 text-sm">{error}</div>}
       </div>
     </div>
   );

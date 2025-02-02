@@ -21,6 +21,10 @@ export const register = asyncHandler(async (req, res) => {
     if (user) {
       throw new Error("user already exists");
     }
+    const phNumber = await User.findOne({phNumber:req.body.phNumber})
+    if(phNumber){
+      throw new Error("Phone number already exist")
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const newUser = await User.create({
@@ -50,6 +54,8 @@ export const login = asyncHandler(async (req, res) => {
     throw new Error("Invalid input types");
   } else {
     const user = await User.findOne({ email: req.body.email });
+    console.log(user.password)
+    console.log(req.body.password)
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) {
       throw new Error("Invalid Email or Password");
