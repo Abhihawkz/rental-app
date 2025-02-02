@@ -59,7 +59,7 @@ export const login = asyncHandler(async (req, res) => {
       process.env.JWT_SECRET
     );
     res.cookie("token", token, { maxAge: 2592000000, httpOnly: true });
-    res.json({ response: "user has sucessfully loged In" });
+    res.json({ response: "user has sucessfully loged In" , user:user });
   }
 });
 
