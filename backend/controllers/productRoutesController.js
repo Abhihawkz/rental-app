@@ -1,41 +1,59 @@
 import asyncHandler from "../routes/middleware.js";
-import { z } from "zod";
 import { Product, Rental } from "../model/dbModel.js";
-
-const productSchema = z.object({
-  name: z.string(),
-  image: z.string(),
-  description: z.string(),
-  price: z.string(),
-  available: z.boolean().optional(),
-});
+import { v2 as cloudinary } from "cloudinary";
 
 export const add = asyncHandler(async (req, res) => {
-  const { success } = productSchema.safeParse(req.body);
-  console.log(req.body)
-  if (!success) {
-    throw new Error("Invalid input types");
+  const { name, description, price } = req.body;
+  const existingProduct = await Product.findOne({ name });
+  if (existingProduct) {
+    return res.status(400).json({ message: "Product already exists" });
   }
-  const product = await Product.findOne({ name: req.body.name });
-  if (product) {
-    throw new Error("Product already Exists");
-  }
-  const newProduct = await Product.create({
-    name: req.body.name,
-    image: req.body.image,
-    description: req.body.description,
-    price: Number(req.body.price),
-    available: req.body.available || true,
-  });
-  res.json({ message: "Product Sucessfully Added", Product: newProduct });
-});
 
-const editSchema = z.object({
-  name: z.string().optional(),
-  image: z.string().optional(),
-  description: z.string().optional(),
-  price: z.string().optional(),
-  available: z.boolean().optional(),
+  let imageUrl = null;
+  if (req.file) {
+    if (!cloudinary.config().cloud_name) {
+      return res
+        .status(500)
+        .json({ message: "Cloudinary is not configured properly" });
+    }
+
+    try {
+      if (!req.file.path) {
+        return res
+          .status(400)
+          .json({ message: "No file path found in request" });
+      }
+
+      const uploadResponse = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = uploadResponse.secure_url;
+    } catch (error) {
+      console.log("Error uploading to Cloudinary:", error);
+      return res.status(500).json({
+        message: "Error uploading image to Cloudinary",
+        error: error.message,
+      });
+    }
+  }
+
+  const newProduct = new Product({
+    name,
+    description,
+    price: Number(price),
+    image: imageUrl,
+    available: true,
+  });
+
+  try {
+    const savedProduct = await newProduct.save();
+    res
+      .status(200)
+      .json({ message: "Product successfully added", product: savedProduct });
+  } catch (error) {
+    console.log("Error saving product:", error);
+    res
+      .status(500)
+      .json({ message: "Error saving product", error: error.message });
+  }
 });
 
 export const edit = asyncHandler(async (req, res) => {

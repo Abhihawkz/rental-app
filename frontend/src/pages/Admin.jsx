@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { post } from "../services/ApiEndPoint";
 import toast from "react-hot-toast";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Logout } from "../redux/AuthSlice";
@@ -10,15 +10,16 @@ const Admin = () => {
     name: "",
     description: "",
     price: "",
-    image: "",
+    image: null,
   });
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.Auth.user);
 
   const onLogout = async () => {
     try {
-      const response = await post("/api/v1/user/logout");
+      const response = await axios.post("/api/v1/user/logout");
       if (response.status === 200) {
         toast.success(response.data.message);
         dispatch(Logout());
@@ -28,11 +29,20 @@ const Admin = () => {
       toast.error("Logout failed.");
     }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewProduct({
       ...newProduct,
       [name]: value,
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setNewProduct({
+      ...newProduct,
+      image: file,
     });
   };
 
@@ -49,20 +59,31 @@ const Admin = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("name", newProduct.name);
+    formData.append("description", newProduct.description);
+    formData.append("price", newProduct.price);
+    formData.append("image", newProduct.image);
+
     try {
-      const { name, description, price, image } = newProduct;
-      const response = await post("/api/v1/product/add", {
-        name,
-        description,
-        price,
-        image,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/product/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+
       if (response.status === 200) {
         toast.success(response.data.message);
-        setNewProduct({ name: "", description: "", price: "", image: "" });
+        setNewProduct({ name: "", description: "", price: "", image: null });
       }
     } catch (error) {
-      console.log("Error while Adding the data");
+      console.log("Error while adding the product", error);
+      toast.error("Error while adding the product.");
     }
   };
 
@@ -133,14 +154,13 @@ const Admin = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700" htmlFor="image">
-                  Image URL
+                  Image
                 </label>
                 <input
-                  type="text"
+                  type="file"
                   name="image"
                   id="image"
-                  value={newProduct.image}
-                  onChange={handleInputChange}
+                  onChange={handleFileChange}
                   className="mt-2 p-2 w-full border border-gray-300 rounded"
                 />
               </div>

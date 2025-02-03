@@ -11,7 +11,7 @@ const Card = ({ name, image, description, price, available }) => {
       <div className="p-4">
         <h3 className="text-xl font-semibold text-gray-800">{name}</h3>
         <p className="text-sm text-gray-600 mt-2">{description}</p>
-        <p className="text-lg font-bold text-gray-900 mt-4">${price}</p>
+        <p className="text-lg font-bold text-gray-900 mt-4">Rs {price}</p>
         <span
           className={`inline-block mt-2 px-4 py-1 rounded-full text-white ${
             available ? 'bg-green-500' : 'bg-red-500'

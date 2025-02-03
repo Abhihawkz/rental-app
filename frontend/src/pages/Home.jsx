@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { Logout } from "../redux/AuthSlice";
-import { FaBoxOpen, FaCartPlus, FaSignOutAlt } from "react-icons/fa"; 
+import { FaBoxOpen, FaCartPlus, FaSignOutAlt } from "react-icons/fa";
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -14,7 +14,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Auth.user);
   const navigate = useNavigate();
-
 
   const fetchData = async (category) => {
     try {
@@ -25,9 +24,15 @@ const Home = () => {
       } else if (category === "rented") {
         response = await get("/api/v1/product/userRented");
         if (response.data.products.length === 0) {
-          setData([]); 
+          setData([]);
         } else {
-          setData(response.data.products);
+          const rentedProducts = response.data.products.map((item) => ({
+            ...item.product,
+            startDate: item.startDate,
+            endDate: item.endDate,
+            totalPrice: item.totalPrice,
+          }));
+          setData(rentedProducts);
         }
       }
     } catch (error) {
@@ -36,7 +41,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchData("available"); 
+    fetchData("available");
   }, []);
 
   const onLogout = async () => {
@@ -61,7 +66,7 @@ const Home = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-between items-center px-6 py-4 w-full border-b-2 border-gray-200 bg-white">
         <div className="text-lg font-medium text-gray-800 cursor-pointer">
-          Welcome, {user.username? user.username : "no Name"}!
+          Welcome, {user.username ? user.username : "no Name"}!
         </div>
         <button
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
@@ -101,14 +106,36 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {data.map((product) => (
-                <Card
+                <div
                   key={product._id}
-                  name={product.name}
-                  image={product.image}
-                  description={product.description}
-                  price={product.price}
-                  available={product.available}
-                />
+                  className="border rounded-lg p-4 bg-white shadow-md"
+                >
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-40 object-cover mb-4"
+                  />
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600">{product.description}</p>
+                  <p className="text-lg font-medium text-gray-900">
+                    Price: Rs - {product.price}
+                  </p>
+
+                  {selectedCategory === "rented" && (
+                    <>
+                      <p className="text-sm text-gray-600">
+                        Rented from:{" "}
+                        {new Date(product.startDate).toLocaleDateString()} -{" "}
+                        {new Date(product.endDate).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Total Price: Rs - {product.totalPrice}
+                      </p>
+                    </>
+                  )}
+                </div>
               ))}
             </div>
           )}

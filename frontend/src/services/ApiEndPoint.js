@@ -15,19 +15,16 @@ export const post = (url, data) => instance.post(url, data);
 export const del = (url, data) => instance.delete(url, data);
 export const put = (url) => instance.put(url);
 
-// Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
 
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor
 instance.interceptors.response.use(
   function (response) {
     console.log("interceptor responce", response);
@@ -35,7 +32,6 @@ instance.interceptors.response.use(
   },
   function (error) {
     console.log("interceptor responce", error);
-
     return Promise.reject(error);
   }
 );

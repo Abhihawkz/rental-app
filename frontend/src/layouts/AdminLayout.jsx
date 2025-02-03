@@ -8,7 +8,7 @@ const AdminLayout = () => {
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
-      console.log(user?.role); 
+      console.log(user?.role);
       navigate("/signin");
     }
   }, [user, navigate]);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminMiddleware, userMiddleware } from "./middleware.js";
+import { adminMiddleware, uploadImage, userMiddleware } from "./middleware.js";
 import {
   add,
   del,
@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.post("/add", adminMiddleware, add);
+router.post("/add", adminMiddleware,uploadImage, add);
 
 router.put("/edit", adminMiddleware, edit);
 
