@@ -27,11 +27,9 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   function (response) {
-    console.log("interceptor responce", response);
     return response;
   },
   function (error) {
-    console.log("interceptor responce", error);
     return Promise.reject(error);
   }
 );
